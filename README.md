@@ -1,6 +1,3 @@
-[![](https://images.microbadger.com/badges/image/jorgedlcruz/zimbra.svg)](https://microbadger.com/images/jorgedlcruz/zimbra "Get your own image badge on microbadger.com")
-[![](https://images.microbadger.com/badges/version/jorgedlcruz/zimbra.svg)](https://microbadger.com/images/jorgedlcruz/zimbra "Get your own version badge on microbadger.com")
-
 # Zimbra
 In this Repository you will find how to install Zimbra on Docker
 
@@ -15,13 +12,13 @@ One of the advantages of using docker is that the host OS does not matter, the c
 ## Downloading the image
 The first step is to pull this image into your docker environment, for that just run the next:
 ```bash
-docker pull jorgedlcruz/zimbra
+docker pull alexishida/zimbra:8.7.11
 ```
 
 ## Creating Zimbra Containers
 Now that we have an image called jorgedlcruz/zimbra, we can do a docker run with some special parameters, like this:
 ```bash
-docker run -p 25:25 -p 80:80 -p 465:465 -p 587:587 -p 110:110 -p 143:143 -p 993:993 -p 995:995 -p 443:443 -p 8080:8080 -p 8443:8443 -p 7071:7071 -p 9071:9071 -h zimbra-docker.zimbra.io --dns 127.0.0.1 --dns 8.8.8.8 -i -t -e PASSWORD=Zimbra2017 jorgedlcruz/zimbra
+docker run -p 25:25 -p 80:80 -p 465:465 -p 587:587 -p 110:110 -p 143:143 -p 993:993 -p 995:995 -p 443:443 -p 8080:8080 -p 8443:8443 -p 7071:7071 -p 9071:9071 -h zimbra-docker.zimbra.io --dns 127.0.0.1 --dns 8.8.8.8 -i -t -e PASSWORD=Zimbra2017 alexishida/zimbra:8.7.11
 ```
 As you can see we tell the container the ports we want to expose, and on which port, we also specify the container hostname, the password foir the Zimbra Administrator Account, and the image to use.
 
