@@ -1,61 +1,30 @@
 #!/bin/sh
 ## Preparing all the variables like IP, Hostname, etc, all of them from the container
-sleep 5
+if [[ ! -f "/opt/zimbra-install/installZimbraScript" ]]; then
+
 HOSTNAME=$(hostname -s)
 DOMAIN=$(hostname -d)
 CONTAINERIP=$(ip addr | grep 'state UP' -A2 | tail -n1 | awk '{print $2}' | cut -f1  -d'/')
 RANDOMHAM=$(date +%s|sha256sum|base64|head -c 10)
 RANDOMSPAM=$(date +%s|sha256sum|base64|head -c 10)
 RANDOMVIRUS=$(date +%s|sha256sum|base64|head -c 10)
-INSTALLED=/opt/zimbra/.INSTALLED
-
-## Locales
-locale-gen en_US en_US.UTF-8 en_GB en_GB.UTF-8 pt_BR.ISO-8859-1 pt_BR.UTF-8
-dpkg-reconfigure locales
 
 ## SSH
 sudo service ssh restart
 
 ## Installing the DNS Server ##
 echo "Configuring DNS Server"
-sed "s/-u/-4 -u/g" /etc/default/bind9 > /etc/default/bind9.new
-mv /etc/default/bind9.new /etc/default/bind9
-rm /etc/bind/named.conf.options
-cat <<EOF >>/etc/bind/named.conf.options
-options {
-directory "/var/cache/bind";
-listen-on { $CONTAINERIP; }; # ns1 private IP address - listen on private network only
-allow-transfer { none; }; # disable zone transfers by default
-forwarders {
-8.8.8.8;
-8.8.4.4;
-};
-auth-nxdomain no; # conform to RFC1035
-#listen-on-v6 { any; };
-};
-EOF
-mv /etc/bind/db.domain /etc/bind/db.$DOMAIN
-
 echo "nameserver $CONTAINERIP" > /etc/resolv.conf
-
-sed -i 's/\$DOMAIN/'$DOMAIN'/g' \
-  /etc/bind/db.$DOMAIN \
-  /etc/bind/named.conf.local
-
-sed -i 's/\$HOSTNAME/'$HOSTNAME'/g' /etc/bind/db.$DOMAIN
-
-sed -i 's/\$CONTAINERIP/'$CONTAINERIP'/g' /etc/bind/db.$DOMAIN
-
-sudo service bind9 restart
-
-## Already installed?
-if [ -f $INSTALLED ]; then
-  su -c "/opt/zimbra/bin/zmcontrol start" zimbra
-
-  while true; do sleep 1000; done
-
-  exit
-fi
+mv /etc/dnsmasq.conf /etc/dnsmasq.conf.old
+cat <<EOF >>/etc/dnsmasq.conf
+server=8.8.8.8
+listen-address=127.0.0.1
+domain=$DOMAIN
+mx-host=$DOMAIN,$HOSTNAME.$DOMAIN,0
+address=/$HOSTNAME.$DOMAIN/$CONTAINERIP
+user=root
+EOF
+sudo service dnsmasq restart
 
 ##Creating the Zimbra Collaboration Config File ##
 touch /opt/zimbra-install/installZimbraScript
@@ -177,10 +146,10 @@ cd /opt/zimbra-install/zcs-* && ./install.sh -s < /opt/zimbra-install/installZim
 
 echo "Installing Zimbra Collaboration injecting the configuration"
 /opt/zimbra/libexec/zmsetup.pl -c /opt/zimbra-install/installZimbraScript
+fi
 
-
-##Mark installed ##
-touch $INSTALLED
+su - zimbra -c 'zmcontrol restart'
+echo "You can access now to your Zimbra Collaboration Server"
 
 if [[ $1 == "-d" ]]; then
   while true; do sleep 1000; done
