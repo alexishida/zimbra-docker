@@ -14,7 +14,7 @@ sudo service ssh restart
 
 ## Installing the DNS Server ##
 echo "Configuring DNS Server"
-echo "nameserver $CONTAINERIP" > /etc/resolv.conf
+echo "nameserver $CONTAINERIP" >> /etc/resolv.conf
 mv /etc/dnsmasq.conf /etc/dnsmasq.conf.old
 cat <<EOF >>/etc/dnsmasq.conf
 server=8.8.8.8
