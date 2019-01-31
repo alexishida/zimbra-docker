@@ -142,14 +142,12 @@ cd /opt/zimbra-install/zcs-* && ./install.sh -s < /opt/zimbra-install/installZim
 
 echo "Installing Zimbra Collaboration injecting the configuration"
 /opt/zimbra/libexec/zmsetup.pl -c /opt/zimbra-install/installZimbraScript
+fi
 
 su - zimbra -c 'zmcontrol restart'
 echo "You can access now to your Zimbra Collaboration Server"
-fi
 
 if [[ $1 == "-d" ]]; then
-  su - zimbra -c 'zmcontrol restart'
-  echo "You can access now to your Zimbra Collaboration Server"
   while true; do sleep 1000; done
 fi
 
