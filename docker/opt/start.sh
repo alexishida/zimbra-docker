@@ -14,7 +14,7 @@ sudo service ssh restart
 
 ## Installing the DNS Server ##
 echo "Configuring DNS Server"
-echo "nameserver $CONTAINERIP" >> /etc/resolv.conf
+echo "nameserver 127.0.0.1" >> /etc/resolv.conf
 mv /etc/dnsmasq.conf /etc/dnsmasq.conf.old
 cat <<EOF >>/etc/dnsmasq.conf
 server=8.8.8.8
@@ -119,7 +119,7 @@ zimbraFeatureTasksEnabled="Enabled"
 zimbraIPMode="ipv4"
 zimbraMailProxy="FALSE"
 zimbraMtaMyNetworks="127.0.0.0/8 $CONTAINERIP/32 [::1]/128 [fe80::]/64"
-zimbraPrefTimeZoneId="America/Los_Angeles"
+zimbraPrefTimeZoneId="America/Porto_Velho"
 zimbraReverseProxyLookupTarget="TRUE"
 zimbraVersionCheckInterval="1d"
 zimbraVersionCheckNotificationEmail="admin@$DOMAIN"
@@ -145,10 +145,13 @@ echo "Installing Zimbra Collaboration just the Software"
 cd /opt/zimbra-install/zcs-* && ./install.sh -s < /opt/zimbra-install/installZimbra-keystrokes
 
 echo "Installing Zimbra Collaboration injecting the configuration"
-/opt/zimbra/libexec/zmsetup.pl -c /opt/zimbra-install/installZimbraScript
+#/opt/zimbra/libexec/zmsetup.pl -c /opt/zimbra-install/installZimbraScript
 fi
 
 su - zimbra -c 'zmcontrol restart'
+su - zimbra -c 'zmprov ms `zmhostname` -zimbraServiceEnabled antispam'
+su - zimbra -c 'zmprov ms `zmhostname` -zimbraServiceEnabled antivirus'
+su - zimbra -c 'zmprov ms `zmhostname` -zimbraServiceEnabled amavis'
 echo "You can access now to your Zimbra Collaboration Server"
 
 if [[ $1 == "-d" ]]; then
