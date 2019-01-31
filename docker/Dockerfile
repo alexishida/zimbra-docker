@@ -8,7 +8,7 @@ MAINTAINER Alex Ishida <alexishida@gmail.com>
 
 RUN echo "resolvconf resolvconf/linkify-resolvconf boolean false" | debconf-set-selections
 
-RUN apt-get update && apt-get upgrade -y && apt-get autoremove
+RUN apt-get update && apt-get -y upgrade && apt-get -y autoremove
 
 RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get -y install \
   wget \
