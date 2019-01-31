@@ -145,7 +145,7 @@ echo "Installing Zimbra Collaboration just the Software"
 cd /opt/zimbra-install/zcs-* && ./install.sh -s < /opt/zimbra-install/installZimbra-keystrokes
 
 echo "Installing Zimbra Collaboration injecting the configuration"
-#/opt/zimbra/libexec/zmsetup.pl -c /opt/zimbra-install/installZimbraScript
+/opt/zimbra/libexec/zmsetup.pl -c /opt/zimbra-install/installZimbraScript
 fi
 
 su - zimbra -c 'zmcontrol restart'
