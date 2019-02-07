@@ -3,6 +3,7 @@
 # Based on Ubuntu 16.04
 # Created by Alex Ishida
 # https://readyspace.com.sg/how-to-install-zimbra-collaboration-8-8-on-ubuntu-16-04-lts/
+# https://www.ostechnix.com/install-zimbra-collaboration-suite-ubuntu-14-04-lts/
 #################################################################
 FROM ubuntu:16.04
 MAINTAINER Alex Ishida <alexishida@gmail.com>
